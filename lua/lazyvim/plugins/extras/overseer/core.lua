@@ -91,6 +91,11 @@ return {
           ["<C-l>"] = false,
         },
       },
+      form = {
+        win_opts = {
+          winblend = 0,
+        },
+      },
       confirm = {
         win_opts = {
           winblend = 0,
