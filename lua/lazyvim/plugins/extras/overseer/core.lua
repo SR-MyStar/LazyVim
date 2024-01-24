@@ -20,8 +20,7 @@ return {
     optional = true,
     opts = function(_, opts)
       local overseer = require("overseer")
-      local lazyvim = require("lazy.core.config").spec.plugins["LazyVim"]
-      local icons = require("lazy.core.plugin").values(lazyvim, "opts", false).icons.overseer
+      local icons = require("lazyvim.config").icons.overseer
       table.insert(opts.sections.lualine_x, {
         "overseer",
         label = "", -- Prefix for task counts
