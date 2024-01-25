@@ -81,14 +81,6 @@ return {
           ["<C-l>"] = false,
         },
       },
-      task_launcher = {
-        bindings = {
-          ["<C-h>"] = false,
-          ["<C-j>"] = false,
-          ["<C-k>"] = false,
-          ["<C-l>"] = false,
-        },
-      },
       form = {
         win_opts = {
           winblend = 0,
