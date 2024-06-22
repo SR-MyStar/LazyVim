@@ -1,21 +1,21 @@
 return {
+  recommended = function()
+    return LazyVim.extras.wants({
+      ft = { "elixir", "eelixir", "heex", "surface" },
+      root = "mix.exs",
+    })
+  end,
   {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, {
-        "elixir",
-        "heex",
-        "eex",
-      })
-    end,
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        elixirls = {},
+      },
+    },
   },
   {
-    "williamboman/mason.nvim",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, {
-        "elixir-ls",
-      })
-    end,
+    "nvim-treesitter/nvim-treesitter",
+    opts = { ensure_installed = { "elixir", "heex", "eex" } },
   },
   {
     "nvim-neotest/neotest",

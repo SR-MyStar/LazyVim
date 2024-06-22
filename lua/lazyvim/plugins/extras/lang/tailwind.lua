@@ -1,4 +1,18 @@
 return {
+  recommended = function()
+    return LazyVim.extras.wants({
+      root = {
+        "tailwind.config.js",
+        "tailwind.config.cjs",
+        "tailwind.config.mjs",
+        "tailwind.config.ts",
+        "postcss.config.js",
+        "postcss.config.cjs",
+        "postcss.config.mjs",
+        "postcss.config.ts",
+      },
+    })
+  end,
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -35,7 +49,7 @@ return {
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
-      { "roobert/tailwindcss-colorizer-cmp.nvim", config = true },
+      { "roobert/tailwindcss-colorizer-cmp.nvim", opts = {} },
     },
     opts = function(_, opts)
       -- original LazyVim kind icon formatter

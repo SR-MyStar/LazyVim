@@ -1,43 +1,66 @@
+if lazyvim_docs then
+  -- LSP Server to use for Python.
+  -- Set to "basedpyright" to use basedpyright instead of pyright.
+  vim.g.lazyvim_python_lsp = "pyright"
+  vim.g.lazyvim_python_ruff = "ruff_lsp"
+end
+
+local lsp = vim.g.lazyvim_python_lsp or "pyright"
+local ruff = vim.g.lazyvim_python_ruff or "ruff_lsp"
+
 return {
+  recommended = function()
+    return LazyVim.extras.wants({
+      ft = "python",
+      root = {
+        "pyproject.toml",
+        "setup.py",
+        "setup.cfg",
+        "requirements.txt",
+        "Pipfile",
+        "pyrightconfig.json",
+      },
+    })
+  end,
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      if type(opts.ensure_installed) == "table" then
-        vim.list_extend(opts.ensure_installed, { "ninja", "python", "rst", "toml" })
-      end
-    end,
+    opts = { ensure_installed = { "ninja", "rst" } },
   },
   {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        pyright = {},
+        pyright = {
+          enabled = lsp == "pyright",
+        },
+        basedpyright = {
+          enabled = lsp == "basedpyright",
+        },
+        [lsp] = {
+          enabled = true,
+        },
         ruff_lsp = {
+          enabled = ruff == "ruff_lsp",
+        },
+        ruff = {
+          enabled = ruff == "ruff",
+        },
+        [ruff] = {
           keys = {
             {
               "<leader>co",
-              function()
-                vim.lsp.buf.code_action({
-                  apply = true,
-                  context = {
-                    only = { "source.organizeImports" },
-                    diagnostics = {},
-                  },
-                })
-              end,
+              LazyVim.lsp.action["source.organizeImports"],
               desc = "Organize Imports",
             },
           },
         },
       },
       setup = {
-        ruff_lsp = function()
-          require("lazyvim.util").lsp.on_attach(function(client, _)
-            if client.name == "ruff_lsp" then
-              -- Disable hover in favor of Pyright
-              client.server_capabilities.hoverProvider = false
-            end
-          end)
+        [ruff] = function()
+          LazyVim.lsp.on_attach(function(client, _)
+            -- Disable hover in favor of Pyright
+            client.server_capabilities.hoverProvider = false
+          end, ruff)
         end,
       },
     },
@@ -69,27 +92,39 @@ return {
         { "<leader>dPc", function() require('dap-python').test_class() end, desc = "Debug Class", ft = "python" },
       },
       config = function()
-        local path = require("mason-registry").get_package("debugpy"):get_install_path()
-        require("dap-python").setup(path .. "/venv/bin/python")
+        if vim.fn.has("win32") == 1 then
+          require("dap-python").setup(LazyVim.get_pkg_path("debugpy", "/venv/Scripts/pythonw.exe"))
+        else
+          require("dap-python").setup(LazyVim.get_pkg_path("debugpy", "/venv/bin/python"))
+        end
       end,
     },
   },
+
   {
     "linux-cultist/venv-selector.nvim",
+    branch = "regexp", -- Use this branch for the new version
     cmd = "VenvSelect",
-    opts = function(_, opts)
-      if require("lazyvim.util").has("nvim-dap-python") then
-        opts.dap_enabled = true
-      end
-      return vim.tbl_deep_extend("force", opts, {
-        name = {
-          "venv",
-          ".venv",
-          "env",
-          ".env",
-        },
-      })
+    enabled = function()
+      return LazyVim.has("telescope.nvim")
     end,
-    keys = { { "<leader>cv", "<cmd>:VenvSelect<cr>", desc = "Select VirtualEnv" } },
+    opts = {
+      settings = {
+        options = {
+          notify_user_on_venv_activation = true,
+        },
+      },
+    },
+    --  Call config for python files and load the cached venv automatically
+    ft = "python",
+    keys = { { "<leader>cv", "<cmd>:VenvSelect<cr>", desc = "Select VirtualEnv", ft = "python" } },
+  },
+
+  {
+    "hrsh7th/nvim-cmp",
+    opts = function(_, opts)
+      opts.auto_brackets = opts.auto_brackets or {}
+      table.insert(opts.auto_brackets, "python")
+    end,
   },
 }

@@ -1,13 +1,22 @@
 return {
+  recommended = function()
+    return LazyVim.extras.wants({
+      ft = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+      root = {
+        ".clangd",
+        ".clang-tidy",
+        ".clang-format",
+        "compile_commands.json",
+        "compile_flags.txt",
+        "configure.ac", -- AutoTools
+      },
+    })
+  end,
 
   -- Add C/C++ to treesitter
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      if type(opts.ensure_installed) == "table" then
-        vim.list_extend(opts.ensure_installed, { "c", "cpp" })
-      end
-    end,
+    opts = { ensure_installed = { "cpp" } },
   },
 
   {
@@ -49,7 +58,7 @@ return {
         -- Ensure mason installs the server
         clangd = {
           keys = {
-            { "<leader>cR", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
+            { "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
           },
           root_dir = function(fname)
             return require("lspconfig.util").root_pattern(
@@ -85,7 +94,7 @@ return {
       },
       setup = {
         clangd = function(_, opts)
-          local clangd_ext_opts = require("lazyvim.util").opts("clangd_extensions.nvim")
+          local clangd_ext_opts = LazyVim.opts("clangd_extensions.nvim")
           require("clangd_extensions").setup(vim.tbl_deep_extend("force", clangd_ext_opts or {}, { server = opts }))
           return false
         end,
@@ -107,11 +116,7 @@ return {
       -- Ensure C/C++ debugger is installed
       "williamboman/mason.nvim",
       optional = true,
-      opts = function(_, opts)
-        if type(opts.ensure_installed) == "table" then
-          vim.list_extend(opts.ensure_installed, { "codelldb" })
-        end
-      end,
+      opts = { ensure_installed = { "codelldb" } },
     },
     opts = function()
       local dap = require("dap")
@@ -144,7 +149,7 @@ return {
             type = "codelldb",
             request = "attach",
             name = "Attach to process",
-            processId = require("dap.utils").pick_process,
+            pid = require("dap.utils").pick_process,
             cwd = "${workspaceFolder}",
           },
         }

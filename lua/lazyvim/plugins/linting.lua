@@ -11,6 +11,7 @@ return {
         -- ['*'] = { 'global linter' },
         -- Use the "_" filetype to run linters on filetypes that don't have other linters configured.
         -- ['_'] = { 'fallback linter' },
+        -- ["*"] = { "typos" },
       },
       -- LazyVim extension to easily override linter options
       -- or add custom linters.
@@ -27,14 +28,15 @@ return {
       },
     },
     config = function(_, opts)
-      local Util = require("lazyvim.util")
-
       local M = {}
 
       local lint = require("lint")
       for name, linter in pairs(opts.linters) do
         if type(linter) == "table" and type(lint.linters[name]) == "table" then
           lint.linters[name] = vim.tbl_deep_extend("force", lint.linters[name], linter)
+          if type(linter.prepend_args) == "table" then
+            vim.list_extend(lint.linters[name].args, linter.prepend_args)
+          end
         else
           lint.linters[name] = linter
         end
@@ -42,7 +44,7 @@ return {
       lint.linters_by_ft = opts.linters_by_ft
 
       function M.debounce(ms, fn)
-        local timer = vim.loop.new_timer()
+        local timer = vim.uv.new_timer()
         return function(...)
           local argv = { ... }
           timer:start(ms, 0, function()
@@ -59,6 +61,9 @@ return {
         -- * this differs from conform.nvim which only uses the first filetype that has a formatter
         local names = lint._resolve_linter_by_ft(vim.bo.filetype)
 
+        -- Create a copy of the names table to avoid modifying the original.
+        names = vim.list_extend({}, names)
+
         -- Add fallback linters.
         if #names == 0 then
           vim.list_extend(names, lint.linters_by_ft["_"] or {})
@@ -73,7 +78,7 @@ return {
         names = vim.tbl_filter(function(name)
           local linter = lint.linters[name]
           if not linter then
-            Util.warn("Linter not found: " .. name, { title = "nvim-lint" })
+            LazyVim.warn("Linter not found: " .. name, { title = "nvim-lint" })
           end
           return linter and not (type(linter) == "table" and linter.condition and not linter.condition(ctx))
         end, names)

@@ -1,14 +1,13 @@
 return {
+  recommended = function()
+    return LazyVim.extras.wants({
+      ft = { "go", "gomod", "gowork", "gotmpl" },
+      root = { "go.work", "go.mod" },
+    })
+  end,
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, {
-        "go",
-        "gomod",
-        "gowork",
-        "gosum",
-      })
-    end,
+    opts = { ensure_installed = { "go", "gomod", "gowork", "gosum" } },
   },
   {
     "neovim/nvim-lspconfig",
@@ -61,21 +60,19 @@ return {
         gopls = function(_, opts)
           -- workaround for gopls not supporting semanticTokensProvider
           -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
-          require("lazyvim.util").lsp.on_attach(function(client, _)
-            if client.name == "gopls" then
-              if not client.server_capabilities.semanticTokensProvider then
-                local semantic = client.config.capabilities.textDocument.semanticTokens
-                client.server_capabilities.semanticTokensProvider = {
-                  full = true,
-                  legend = {
-                    tokenTypes = semantic.tokenTypes,
-                    tokenModifiers = semantic.tokenModifiers,
-                  },
-                  range = true,
-                }
-              end
+          LazyVim.lsp.on_attach(function(client, _)
+            if not client.server_capabilities.semanticTokensProvider then
+              local semantic = client.config.capabilities.textDocument.semanticTokens
+              client.server_capabilities.semanticTokensProvider = {
+                full = true,
+                legend = {
+                  tokenTypes = semantic.tokenTypes,
+                  tokenModifiers = semantic.tokenModifiers,
+                },
+                range = true,
+              }
             end
-          end)
+          end, "gopls")
           -- end workaround
         end,
       },
@@ -84,10 +81,7 @@ return {
   -- Ensure Go tools are installed
   {
     "williamboman/mason.nvim",
-    opts = function(_, opts)
-      opts.ensure_installed = opts.ensure_installed or {}
-      vim.list_extend(opts.ensure_installed, { "goimports", "gofumpt" })
-    end,
+    opts = { ensure_installed = { "goimports", "gofumpt" } },
   },
   {
     "nvimtools/none-ls.nvim",
@@ -95,10 +89,7 @@ return {
     dependencies = {
       {
         "williamboman/mason.nvim",
-        opts = function(_, opts)
-          opts.ensure_installed = opts.ensure_installed or {}
-          vim.list_extend(opts.ensure_installed, { "gomodifytags", "impl" })
-        end,
+        opts = { ensure_installed = { "gomodifytags", "impl" } },
       },
     },
     opts = function(_, opts)
@@ -126,14 +117,11 @@ return {
     dependencies = {
       {
         "williamboman/mason.nvim",
-        opts = function(_, opts)
-          opts.ensure_installed = opts.ensure_installed or {}
-          vim.list_extend(opts.ensure_installed, { "delve" })
-        end,
+        opts = { ensure_installed = { "delve" } },
       },
       {
         "leoluz/nvim-dap-go",
-        config = true,
+        opts = {},
       },
     },
   },
@@ -148,6 +136,7 @@ return {
         ["neotest-go"] = {
           -- Here we can set options for neotest-go, e.g.
           -- args = { "-tags=integration" }
+          recursive_run = true,
         },
       },
     },

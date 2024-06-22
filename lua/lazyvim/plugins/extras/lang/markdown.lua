@@ -1,18 +1,23 @@
 return {
+  recommended = function()
+    return LazyVim.extras.wants({
+      ft = "markdown",
+      root = "README.md",
+    })
+  end,
   {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      if type(opts.ensure_installed) == "table" then
-        vim.list_extend(opts.ensure_installed, { "markdown", "markdown_inline" })
-      end
-    end,
+    "stevearc/conform.nvim",
+    optional = true,
+    opts = {
+      formatters_by_ft = {
+        ["markdown"] = { { "prettierd", "prettier" }, "markdownlint", "markdown-toc" },
+        ["markdown.mdx"] = { { "prettierd", "prettier" }, "markdownlint", "markdown-toc" },
+      },
+    },
   },
   {
     "williamboman/mason.nvim",
-    opts = function(_, opts)
-      opts.ensure_installed = opts.ensure_installed or {}
-      vim.list_extend(opts.ensure_installed, { "markdownlint", "marksman" })
-    end,
+    opts = { ensure_installed = { "markdownlint", "markdown-toc" } },
   },
   {
     "nvimtools/none-ls.nvim",
@@ -69,6 +74,8 @@ return {
       for _, ft in ipairs({ "markdown", "norg", "rmd", "org" }) do
         opts[ft] = {
           headline_highlights = {},
+          -- disable bullets for now. See https://github.com/lukas-reineke/headlines.nvim/issues/66
+          bullets = {},
         }
         for i = 1, 6 do
           local hl = "Headline" .. i
