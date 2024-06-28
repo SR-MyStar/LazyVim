@@ -1,5 +1,59 @@
 # Changelog
 
+## [12.20.1](https://github.com/LazyVim/LazyVim/compare/v12.20.0...v12.20.1) (2024-06-26)
+
+
+### Bug Fixes
+
+* **autocmds:** check that buf exists ([135ce0d](https://github.com/LazyVim/LazyVim/commit/135ce0d7edb64958b2c8f636a9ba624ec0721eb3))
+
+## [12.20.0](https://github.com/LazyVim/LazyVim/compare/v12.19.1...v12.20.0) (2024-06-25)
+
+
+### Features
+
+* **autocmds:** added proper bigfile support ([938a671](https://github.com/LazyVim/LazyVim/commit/938a6718c6f0d5c6716a34bd3383758907820c52))
+
+
+### Bug Fixes
+
+* **dashboard:** load dashboard when closing lazy if needed ([fa2fc64](https://github.com/LazyVim/LazyVim/commit/fa2fc6403185faabc47741b3aa2809192870b92e))
+* **elixir:** fix credo detection for elixir linters. ([#3809](https://github.com/LazyVim/LazyVim/issues/3809)) ([c132158](https://github.com/LazyVim/LazyVim/commit/c13215814cd5dc3821625e9f3b55860ba880ebdb))
+* **fzf:** disable `preview` for `vtsls` ([#3798](https://github.com/LazyVim/LazyVim/issues/3798)) ([b5945c2](https://github.com/LazyVim/LazyVim/commit/b5945c2fc8cbb531983c7ec27d283ad8abf1acec))
+* **noice:** dont show old messages when installing plugins ([faee8ce](https://github.com/LazyVim/LazyVim/commit/faee8ce5819c40852f574aafad55701e2492ffae))
+* **util.terminal:** fix the shellredir and shellpipe options for powershell    ([#3803](https://github.com/LazyVim/LazyVim/issues/3803)) ([a33eabd](https://github.com/LazyVim/LazyVim/commit/a33eabddd9f3786421652d07894516d946c88647))
+
+
+### Performance Improvements
+
+* **markdown:** add filetype in VeryLazy ([3513362](https://github.com/LazyVim/LazyVim/commit/351336244c0a68d4ebed7f687e27e6eab8e5da09))
+
+## [12.19.1](https://github.com/LazyVim/LazyVim/compare/v12.19.0...v12.19.1) (2024-06-23)
+
+
+### Bug Fixes
+
+* **dap:** only load `mason-nvim-dap` when not disabled ([#3784](https://github.com/LazyVim/LazyVim/issues/3784)) ([b55c773](https://github.com/LazyVim/LazyVim/commit/b55c7734df72ff06659c16f5f9ed27b6b7199d44))
+* **extras.astro:** support `astro.config.ts` root ([#3786](https://github.com/LazyVim/LazyVim/issues/3786)) ([8be66bb](https://github.com/LazyVim/LazyVim/commit/8be66bb1a62aae97552032926fdcc101867b2028))
+* **lazygit:** use `lazy.util.open` on Neovim &lt;= 0.10 ([#3778](https://github.com/LazyVim/LazyVim/issues/3778)) ([8ea3f69](https://github.com/LazyVim/LazyVim/commit/8ea3f690e6017ba37022060a62f1d69fbf3aeaf7))
+* **markdown:** added support for mdx files ([abec8fb](https://github.com/LazyVim/LazyVim/commit/abec8fbb03bdbe881c35401274083f315025a1ed))
+
+## [12.19.0](https://github.com/LazyVim/LazyVim/compare/v12.18.0...v12.19.0) (2024-06-23)
+
+
+### Features
+
+* **gitsigns:** navigate diff changes as well as git hunks with [h/]h ([#3736](https://github.com/LazyVim/LazyVim/issues/3736)) ([1f42393](https://github.com/LazyVim/LazyVim/commit/1f423930e03078eb1a2786356a46287c8a466c91))
+* **gitsigns:** new keymap for `Gitsigns blame` ([#3758](https://github.com/LazyVim/LazyVim/issues/3758)) ([b22831b](https://github.com/LazyVim/LazyVim/commit/b22831b7e25a4681df171da30204d4d4f7e9abfa))
+* **go:** switch to neotest-golang ([#3749](https://github.com/LazyVim/LazyVim/issues/3749)) ([55464b7](https://github.com/LazyVim/LazyVim/commit/55464b77c6ae8f14306ce743bcb3c5c465af3d4f))
+
+
+### Bug Fixes
+
+* **neo-tree:** don't enable document symbols by default ([52d4616](https://github.com/LazyVim/LazyVim/commit/52d46166b14a9e99509c509482d9a0979fa00809))
+* **refactoring:** use `pick` for both Telescope and fzf-lua ([#3769](https://github.com/LazyVim/LazyVim/issues/3769)) ([b45d4ed](https://github.com/LazyVim/LazyVim/commit/b45d4ed62c613a4c47dd9183cf51985f2b153b21))
+* **statuscolumn:** fix `folds_open = true` ([#3756](https://github.com/LazyVim/LazyVim/issues/3756)) ([b47c65f](https://github.com/LazyVim/LazyVim/commit/b47c65f4087c4d82720ab7439f395aba5d6b5f40))
+
 ## [12.18.0](https://github.com/LazyVim/LazyVim/compare/v12.17.0...v12.18.0) (2024-06-19)
 
 
