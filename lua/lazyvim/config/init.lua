@@ -33,12 +33,6 @@ local defaults = {
     misc = {
       dots = "󰇘",
     },
-    overseer = {
-      Canceled = " ",
-      Failure  = " ",
-      Success  = " ",
-      Running  = " ",
-    }.
     ft = {
       octo = "",
     },
