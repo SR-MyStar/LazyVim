@@ -45,8 +45,9 @@ return {
     "ibhagwan/fzf-lua",
     cmd = "FzfLua",
     opts = function(_, opts)
-      local config = require("fzf-lua.config")
-      local actions = require("fzf-lua.actions")
+      local fzf = require("fzf-lua")
+      local config = fzf.config
+      local actions = fzf.actions
 
       -- Quickfix
       config.defaults.keymap.fzf["ctrl-q"] = "select-all+accept"
@@ -74,18 +75,6 @@ return {
       config.defaults.actions.files["alt-c"] = config.defaults.actions.files["ctrl-r"]
       config.set_action_helpstr(config.defaults.actions.files["ctrl-r"], "toggle-root-dir")
 
-      -- use the same prompt for all
-      local defaults = require("fzf-lua.profiles.default-title")
-      local function fix(t)
-        t.prompt = t.prompt ~= nil and " " or nil
-        for _, v in pairs(t) do
-          if type(v) == "table" then
-            fix(v)
-          end
-        end
-      end
-      fix(defaults)
-
       local img_previewer ---@type string[]?
       for _, v in ipairs({
         { cmd = "ueberzug", args = {} },
@@ -98,7 +87,8 @@ return {
         end
       end
 
-      return vim.tbl_deep_extend("force", defaults, {
+      return {
+        "default-title",
         fzf_colors = true,
         fzf_opts = {
           ["--no-scrollbar"] = true,
@@ -186,9 +176,24 @@ return {
             previewer = vim.fn.executable("delta") == 1 and "codeaction_native" or nil,
           },
         },
-      })
+      }
     end,
     config = function(_, opts)
+      if opts[1] == "default-title" then
+        -- use the same prompt for all pickers for profile `default-title` and
+        -- profiles that use `default-title` as base profile
+        local function fix(t)
+          t.prompt = t.prompt ~= nil and " " or nil
+          for _, v in pairs(t) do
+            if type(v) == "table" then
+              fix(v)
+            end
+          end
+          return t
+        end
+        opts = vim.tbl_deep_extend("force", fix(require("fzf-lua.profiles.default-title")), opts)
+        opts[1] = nil
+      end
       require("fzf-lua").setup(opts)
     end,
     init = function()

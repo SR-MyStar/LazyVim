@@ -1,11 +1,10 @@
 -- Show context of the current function
 return {
   "nvim-treesitter/nvim-treesitter-context",
-  event = "VeryLazy",
+  event = "LazyFile",
   opts = function()
     local tsc = require("treesitter-context")
-
-    LazyVim.toggle.map("<leader>ut", {
+    Snacks.toggle({
       name = "Treesitter Context",
       get = tsc.enabled,
       set = function(state)
@@ -15,8 +14,7 @@ return {
           tsc.disable()
         end
       end,
-    })
-
+    }):map("<leader>ut")
     return { mode = "cursor", max_lines = 3 }
   end,
 }
